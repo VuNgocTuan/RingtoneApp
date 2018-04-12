@@ -4,12 +4,13 @@ import android.content.Context
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
+import ringtone.studio.vuetu.ringtoneapp.tablayout.fragment.NewRingtoneFragment
 
 /**
  * Created by vungoctuan on 4/11/18.
  */
 class MainPagerAdapter(fm: FragmentManager, context: Context) : FragmentPagerAdapter(fm) {
-    private val mPageCount = 3
+    private val mPageCount = 1
     private val tabTitles = arrayOf("Mới Nhất", "Hot Nhất", "Hay Nhất")
     private var mContext: Context = context
 
