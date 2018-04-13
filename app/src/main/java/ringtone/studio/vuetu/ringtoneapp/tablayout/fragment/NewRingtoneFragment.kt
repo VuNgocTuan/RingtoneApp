@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,29 +43,19 @@ class NewRingtoneFragment : Fragment() {
 
     private fun initRecyclerView(view: View) {
         val layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
-        layoutManager.stackFromEnd = true
         mRecyclerView = view.findViewById(R.id.recycler_main_newest)
         mRecyclerView.layoutManager = layoutManager
         mAdapter = NewRingtoneAdapter()
-//        for (i in 1..50) {
-//            mAdapter.addRingtone(Ringtone("Con mua ngang qua", "Son Tung", "link"))
-//        }
         mRecyclerView.adapter = mAdapter
     }
 
     private fun getDataFromServer() {
-        Log.d("Fragment: ", "Starting")
         Thread(Runnable {
             kotlin.run {
                 try {
                     val doc = Jsoup.connect("http://tainhacchuong.net").get()
                     val newElement = doc.select("div.item.trailer")
-                    for (link in newElement) {
-//                        val ringtoneName = link.select("b[itemprop]").text()
-//                        val ringtoneAuthor = link.select("a[style][title][href]").text()
-//                        val ringtoneLink = link.select("span").attr("data-link")
-//                        mAdapter.addRingtone(Ringtone(ringtoneName, ringtoneAuthor, ringtoneLink))
-                    }
+
                     Observable.just(newElement)
                             .subscribeOn(Schedulers.newThread())
                             .observeOn(AndroidSchedulers.mainThread())
@@ -79,9 +68,6 @@ class NewRingtoneFragment : Fragment() {
                                         val ringtoneName = query.select("b[itemprop]").text()
                                         val ringtoneAuthor = query.select("a[style][title][href]").text()
                                         val ringtoneLink = query.select("span").attr("data-link")
-                                        Log.d("Fragment name ", ringtoneName)
-                                        Log.d("Fragment author ", ringtoneAuthor)
-                                        Log.d("Fragment link ", ringtoneLink)
                                         mAdapter.addRingtone(
                                                 Ringtone(ringtoneName,
                                                         ringtoneAuthor,
@@ -95,13 +81,10 @@ class NewRingtoneFragment : Fragment() {
                                 override fun onComplete() {
                                 }
                             })
-//                            }
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    Log.d("Fragment: ", "Error")
                 }
             }
-
         }).start()
     }
 

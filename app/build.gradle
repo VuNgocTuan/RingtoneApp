@@ -22,6 +22,7 @@ android {
     }
 }
 
+
 ext {
     supportLibVersion = '27.1.1'  // variable that can be referenced to keep support libs consistent
 }
@@ -40,4 +41,5 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.11.2'
     implementation 'io.reactivex.rxjava2:rxkotlin:2.2.0'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    implementation 'com.txusballesteros:FitChart:1.0'
 }
