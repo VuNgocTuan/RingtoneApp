@@ -10,7 +10,6 @@ class MyMediaPlayer {
 
     companion object {
         private var mMyPlayer: MyMediaPlayer? = null
-
         fun getInstance(): MyMediaPlayer {
             if (mMyPlayer == null) {
                 mMyPlayer = MyMediaPlayer()
@@ -19,19 +18,23 @@ class MyMediaPlayer {
         }
     }
 
-    fun playMusicByUrl(url: String) {
+    fun playMusicByUrl(url: String,
+                       completionListener: MediaPlayer.OnCompletionListener,
+                       preparedListener: MediaPlayer.OnPreparedListener) {
         try {
             mPlayer.reset()
             mPlayer.setDataSource(url)
-            mPlayer.setOnPreparedListener { onPrepared(mPlayer) }
+//            mPlayer.setOnPreparedListener { onPrepared(mPlayer) }
             mPlayer.prepareAsync()
         } catch (e: Exception) {
             e.printStackTrace()
         }
+        mPlayer.setOnCompletionListener(completionListener)
+        mPlayer.setOnPreparedListener(preparedListener)
     }
 
-    private fun onPrepared(player: MediaPlayer) {
-        player.start()
+    fun startPlayer() {
+        mPlayer.start()
     }
 
     fun destroyMediaPlayer() {
@@ -44,4 +47,5 @@ class MyMediaPlayer {
     fun getDuration(): Float {
         return mPlayer.duration.toFloat()
     }
+
 }
