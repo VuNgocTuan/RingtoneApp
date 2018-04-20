@@ -24,7 +24,6 @@ class MyMediaPlayer {
         try {
             mPlayer.reset()
             mPlayer.setDataSource(url)
-//            mPlayer.setOnPreparedListener { onPrepared(mPlayer) }
             mPlayer.prepareAsync()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -44,8 +43,9 @@ class MyMediaPlayer {
     fun getCurrentPosition(): Float {
         return mPlayer.currentPosition.toFloat()
     }
+
     fun getDuration(): Float {
         return mPlayer.duration.toFloat()
     }
-
 }
+

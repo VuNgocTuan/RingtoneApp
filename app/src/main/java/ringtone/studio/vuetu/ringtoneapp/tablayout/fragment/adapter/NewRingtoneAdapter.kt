@@ -21,9 +21,25 @@ import ringtone.studio.vuetu.ringtoneapp.repository.model.Ringtone
  */
 class NewRingtoneAdapter : RecyclerView.Adapter<NewRingtoneAdapter.ViewHolder>() {
     var mRingtoneList = mutableListOf<Ringtone>()
+    var mCurrentPlayIndex = 0
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.setData(mRingtoneList[position])
+
+        holder.mButtonPlay?.setOnClickListener {
+            mRingtoneList[mCurrentPlayIndex].isPlaying = false
+            val my = MyMediaPlayer.getInstance()
+            my.playMusicByUrl(mRingtoneList[position].url,
+                    MediaPlayer.OnCompletionListener {
+                        mRingtoneList[position].isPlaying = false
+                    },
+                    MediaPlayer.OnPreparedListener {
+                        mCurrentPlayIndex = position
+                        mRingtoneList[position].isPlaying = true
+                        my.startPlayer()
+                        holder.changeProgressValue()
+                    })
+        }
     }
 
     override fun getItemCount(): Int {
@@ -38,54 +54,46 @@ class NewRingtoneAdapter : RecyclerView.Adapter<NewRingtoneAdapter.ViewHolder>()
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val mImageBackground = view.findViewById<ImageView>(R.id.image_item_background)
-        private val mButtonPlay = view.findViewById<ImageButton>(R.id.button_play)
+        val mButtonPlay: ImageButton? = view.findViewById<ImageButton>(R.id.button_play)
         private val mTextName = view.findViewById<TextView>(R.id.text_ringtone_name)
         private val mTextAuthor = view.findViewById<TextView>(R.id.text_ringtone_author)
         private val mButtonDownload = view.findViewById<ImageButton>(R.id.button_download)
         private val mProgressPlayer = view.findViewById<DonutProgress>(R.id.progress_player)
         lateinit var mRingtone: Ringtone
-        private var mIsPlaying: Boolean = false
         private var mHandler: Handler = Handler()
         private var myRun: Runnable? = null
 
         init {
-            mButtonPlay.setOnClickListener {
-                val my = MyMediaPlayer.getInstance()
-                my.playMusicByUrl(mRingtone.url,
-                        MediaPlayer.OnCompletionListener {
-                            Log.d("Holder", "Play ok")
-                            mIsPlaying = false
-                        },
-                        MediaPlayer.OnPreparedListener {
-                            Log.d("Holder", "Prepared ok")
-                            mIsPlaying = true
-                            my.startPlayer()
-                            changeProgressValue()
-                        })
+            myRun = Runnable {
+                if (mRingtone.isPlaying) {
+                    mProgressPlayer.progress = MyMediaPlayer.getInstance().getCurrentPosition()
+                    mHandler.postDelayed(myRun, 200)
+                } else {
+                    resetState()
+                }
             }
         }
 
         fun setData(ringtone: Ringtone) {
             mRingtone = ringtone
-//            changeProgressValue()
+            changeProgressValue()
             mTextName.text = mRingtone.name
             mTextAuthor.text = mRingtone.author
         }
 
-        private fun changeProgressValue() {
-            if (mIsPlaying) {
+        fun changeProgressValue() {
+            if (mRingtone.isPlaying) {
                 mProgressPlayer.max = MyMediaPlayer.getInstance().getDuration().toInt()
-                Log.d("Runnable max", "" + mProgressPlayer.max)
-
-                myRun = Runnable {
-                    mProgressPlayer.progress = MyMediaPlayer.getInstance().getCurrentPosition()
-                    Log.d("Runnable", "" + MyMediaPlayer.getInstance().getCurrentPosition())
-                    mHandler.postDelayed(myRun, 200)
-                }
                 myRun?.run()
             } else {
-                mProgressPlayer.progress = 0f
+                resetState()
             }
+        }
+
+
+        fun resetState() {
+            mHandler.removeCallbacks(myRun)
+            mProgressPlayer.progress = 0f
         }
     }
 

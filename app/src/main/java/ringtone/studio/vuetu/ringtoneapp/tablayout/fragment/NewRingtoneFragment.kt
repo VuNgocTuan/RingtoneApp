@@ -50,51 +50,51 @@ class NewRingtoneFragment : Fragment() {
     }
 
     private fun getDataFromServer() {
-//        Thread(Runnable {
-//            kotlin.run {
-//                try {
-//                    val doc = Jsoup.connect("http://tainhacchuong.net").get()
-//                    val newElement = doc.select("div.item.trailer")
-//
-//                    Observable.just(newElement)
-//                            .subscribeOn(Schedulers.newThread())
-//                            .observeOn(AndroidSchedulers.mainThread())
-//                            .subscribe(object : Observer<Elements> {
-//                                override fun onSubscribe(d: Disposable) {
-//                                }
-//
-//                                override fun onNext(t: Elements) {
-//                                    for (query in t) {
-//                                        val ringtoneName = query.select("b[itemprop]").text()
-//                                        val ringtoneAuthor = query.select("a[style][title][href]").text()
-//                                        val ringtoneLink = query.select("span").attr("data-link")
-//                                        mAdapter.addRingtone(
-//                                                Ringtone(ringtoneName,
-//                                                        ringtoneAuthor,
-//                                                        ringtoneLink))
-//                                    }
-//                                }
-//
-//                                override fun onError(e: Throwable) {
-//                                }
-//
-//                                override fun onComplete() {
-//                                }
-//                            })
-//                } catch (e: Exception) {
-//                    e.printStackTrace()
-//                }
-//            }
-//        }).start()
-        for (i in 1..20) {
-            val ringtoneName = "Anh Chua Tung Biet"
-            val ringtoneAuthor = "My Tam"
-            val ringtoneLink = "http://cuudulieutot.com/AnhChuaTungBietYouNeverKnow(nhacChuong)-MyTam.mp3"
-            mAdapter.addRingtone(
-                    Ringtone(ringtoneName,
-                            ringtoneAuthor,
-                            ringtoneLink))
-        }
+        Thread(Runnable {
+            kotlin.run {
+                try {
+                    val doc = Jsoup.connect("http://tainhacchuong.net").get()
+                    val newElement = doc.select("div.item.trailer")
+
+                    Observable.just(newElement)
+                            .subscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(object : Observer<Elements> {
+                                override fun onSubscribe(d: Disposable) {
+                                }
+
+                                override fun onNext(t: Elements) {
+                                    for (query in t) {
+                                        val ringtoneName = query.select("b[itemprop]").text()
+                                        val ringtoneAuthor = query.select("a[style][title][href]").text()
+                                        val ringtoneLink = query.select("span").attr("data-link")
+                                        mAdapter.addRingtone(
+                                                Ringtone(ringtoneName,
+                                                        ringtoneAuthor,
+                                                        ringtoneLink))
+                                    }
+                                }
+
+                                override fun onError(e: Throwable) {
+                                }
+
+                                override fun onComplete() {
+                                }
+                            })
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }).start()
+//        for (i in 1..20) {
+//            val ringtoneName = "Anh Chua Tung Biet"
+//            val ringtoneAuthor = "My Tam"
+//            val ringtoneLink = "http://cuudulieutot.com/AnhChuaTungBietYouNeverKnow(nhacChuong)-MyTam.mp3"
+//            mAdapter.addRingtone(
+//                    Ringtone(ringtoneName,
+//                            ringtoneAuthor,
+//                            ringtoneLink))
+//        }
     }
 
 }
