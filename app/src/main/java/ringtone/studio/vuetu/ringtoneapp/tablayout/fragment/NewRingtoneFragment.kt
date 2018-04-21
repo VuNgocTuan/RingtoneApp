@@ -53,7 +53,7 @@ class NewRingtoneFragment : Fragment() {
         Thread(Runnable {
             kotlin.run {
                 try {
-                    val doc = Jsoup.connect("http://tainhacchuong.net").get()
+                    val doc = Jsoup.connect("http://tainhacchuong.net").timeout(20000).get()
                     val newElement = doc.select("div.item.trailer")
 
                     Observable.just(newElement)
@@ -69,9 +69,10 @@ class NewRingtoneFragment : Fragment() {
                                         val ringtoneAuthor = query.select("a[style][title][href]").text()
                                         val ringtoneLink = query.select("span").attr("data-link")
                                         mAdapter.addRingtone(
-                                                Ringtone(ringtoneName,
+                                                Ringtone(0, ringtoneName,
                                                         ringtoneAuthor,
-                                                        ringtoneLink))
+                                                        ringtoneLink)
+                                        )
                                     }
                                 }
 
@@ -86,6 +87,7 @@ class NewRingtoneFragment : Fragment() {
                 }
             }
         }).start()
+
 //        for (i in 1..20) {
 //            val ringtoneName = "Anh Chua Tung Biet"
 //            val ringtoneAuthor = "My Tam"

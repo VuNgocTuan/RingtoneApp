@@ -36,6 +36,10 @@ class MyMediaPlayer {
         mPlayer.start()
     }
 
+    fun stopPlayer(){
+        mPlayer.reset()
+    }
+
     fun destroyMediaPlayer() {
         mPlayer.release()
     }

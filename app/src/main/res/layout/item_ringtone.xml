@@ -1,27 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="10dp">
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="wrap_content"
+                                             android:padding="10dp">
 
     <ImageView
         android:id="@+id/image_item_background"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:background="@drawable/style_ringtone" />
+        android:background="@drawable/style_ringtone"/>
 
     <ImageButton
         android:id="@+id/button_play"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:background="@drawable/ic_play_white"
+        android:src="@drawable/ic_play_white"
+        android:background="@color/Transparent"
         app:layout_constraintBottom_toBottomOf="@id/image_item_background"
         app:layout_constraintHorizontal_bias="0.05"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/image_item_background" />
+        app:layout_constraintLeft_toLeftOf="@id/image_item_background"
+        app:layout_constraintRight_toRightOf="@id/image_item_background"
+        app:layout_constraintTop_toTopOf="@id/image_item_background"/>
+
+    <ImageButton
+        android:id="@+id/button_download"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_dp10"
+        android:src="@drawable/ic_file_download_white_24dp"
+        android:background="@color/Transparent"
+        app:layout_constraintBottom_toBottomOf="@id/image_item_background"
+        app:layout_constraintRight_toRightOf="@id/image_item_background"
+        app:layout_constraintTop_toTopOf="@id/image_item_background"/>
 
     <TextView
         android:id="@+id/text_ringtone_name"
@@ -35,19 +47,21 @@
         android:textStyle="bold"
         app:layout_constraintLeft_toRightOf="@id/button_play"
         app:layout_constraintRight_toLeftOf="@id/button_download"
-        app:layout_constraintTop_toTopOf="@id/button_play" />
+        app:layout_constraintTop_toTopOf="@id/button_play"/>
 
     <com.github.lzyzsd.circleprogress.DonutProgress
         android:id="@+id/progress_player"
         android:layout_width="55dp"
         android:layout_height="55dp"
-        app:donut_text=""
-        app:donut_unfinished_stroke_width="5dp"
+        app:donut_finished_color="@color/White"
         app:donut_finished_stroke_width="5dp"
+        app:donut_text=""
+        app:donut_unfinished_color="@color/LightSteelBlue"
+        app:donut_unfinished_stroke_width="5dp"
         app:layout_constraintBottom_toBottomOf="@id/button_play"
         app:layout_constraintLeft_toLeftOf="@id/button_play"
         app:layout_constraintRight_toRightOf="@id/button_play"
-        app:layout_constraintTop_toTopOf="@id/button_play" />
+        app:layout_constraintTop_toTopOf="@id/button_play"/>
 
     <TextView
         android:id="@+id/text_ringtone_author"
@@ -57,16 +71,5 @@
         android:textColor="@color/White"
         android:textSize="@dimen/_sp12"
         app:layout_constraintLeft_toLeftOf="@id/text_ringtone_name"
-        app:layout_constraintTop_toBottomOf="@id/text_ringtone_name" />
-
-    <ImageButton
-        android:id="@+id/button_download"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/_dp10"
-        android:background="@drawable/ic_file_download_white_24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        app:layout_constraintTop_toBottomOf="@id/text_ringtone_name"/>
 </android.support.constraint.ConstraintLayout>

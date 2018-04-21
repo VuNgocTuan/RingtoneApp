@@ -10,7 +10,7 @@ import ringtone.studio.vuetu.ringtoneapp.tablayout.fragment.NewRingtoneFragment
  * Created by vungoctuan on 4/11/18.
  */
 class MainPagerAdapter(fm: FragmentManager, context: Context) : FragmentPagerAdapter(fm) {
-    private val mPageCount = 1
+    private val mPageCount = 3
     private val tabTitles = arrayOf("Mới Nhất", "Hot Nhất", "Hay Nhất")
     private var mContext: Context = context
 
@@ -19,6 +19,17 @@ class MainPagerAdapter(fm: FragmentManager, context: Context) : FragmentPagerAda
     }
 
     override fun getItem(position: Int): Fragment {
+        when (position) {
+            0 -> {
+                return NewRingtoneFragment.newInstance()
+            }
+            1 -> {
+            }
+            2
+            -> {
+            }
+
+        }
         return NewRingtoneFragment.newInstance()
     }
 
