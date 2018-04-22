@@ -19,8 +19,8 @@ import ringtone.studio.vuetu.ringtoneapp.repository.model.Ringtone
  * Created by vungoctuan on 4/12/18.
  */
 class NewRingtoneAdapter : RecyclerView.Adapter<NewRingtoneAdapter.ViewHolder>() {
-    var mRingtoneList = mutableListOf<Ringtone>()
-    var currentPlayingIndex = -1
+    private var mRingtoneList = mutableListOf<Ringtone>()
+    private var currentPlayingIndex = -1
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (!mRingtoneList[position].isPlaying) {
