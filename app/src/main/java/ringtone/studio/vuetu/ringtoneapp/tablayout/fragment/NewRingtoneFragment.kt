@@ -4,11 +4,12 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.Toast
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -16,17 +17,18 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.jsoup.select.Elements
 import ringtone.studio.vuetu.ringtoneapp.R
 import ringtone.studio.vuetu.ringtoneapp.repository.model.Ringtone
 import ringtone.studio.vuetu.ringtoneapp.repository.sqlite.RingtoneDatabaseHelper
 import ringtone.studio.vuetu.ringtoneapp.tablayout.fragment.adapter.NewRingtoneAdapter
+import ringtone.studio.vuetu.ringtoneapp.utils.Constants
 
 /**
  * Created by vungoctuan on 4/11/18.
  */
-class NewRingtoneFragment : Fragment() {
+open class NewRingtoneFragment : Fragment() {
     private lateinit var mRecyclerView: RecyclerView
+    private lateinit var mProgressBar: ProgressBar
     private lateinit var mAdapter: NewRingtoneAdapter
     private var mDatabase: RingtoneDatabaseHelper? = null
 
@@ -42,130 +44,73 @@ class NewRingtoneFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         mDatabase = RingtoneDatabaseHelper.getInstance(context)
-        initRecyclerView(view)
-//        getDataFromServer()
-//        getNewestRingtoneFromRemote()
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(object : Observer<Elements> {
-//                    override fun onSubscribe(d: Disposable) {
-//
-//                    }
-//
-//                    override fun onError(e: Throwable) {
-//                        e.printStackTrace()
-//                    }
-//
-//                    override fun onNext(t: Elements) {
-//                        println("Load next.......")
-//                        if (t.size > 0) {
-//                            mDatabase?.deleteAllRecords()
-//                            for (query in t) {
-//                                val ringtoneName = query.select("b[itemprop]").text()
-//                                val ringtoneAuthor = query.select("a[style][title][href]").text()
-//                                val ringtoneLink = query.select("span").attr("data-link")
-//                                mDatabase?.addNewestRingtone(
-//                                        Ringtone(0, ringtoneName,
-//                                                ringtoneAuthor,
-//                                                ringtoneLink)
-//                                )
-//                            }
-//                        }
-//                    }
-//
-//                    override fun onComplete() {
-//                        mDatabase?.getNewestRingtone()?.let {
-//                            mAdapter.setData(it)
-//                        }
-//                        println("Load completes.......")
-//                    }
-//                })
+        initView(view)
+        requestDataFromRemote(Constants.MAIN_URL)
     }
 
-    private fun initRecyclerView(view: View) {
+    private fun initView(view: View) {
         val layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
-        mRecyclerView = view.findViewById(R.id.recycler_main_newest)
+        mRecyclerView = view.findViewById(R.id.recycler_main)
         mRecyclerView.layoutManager = layoutManager
         mAdapter = NewRingtoneAdapter()
         mRecyclerView.adapter = mAdapter
+
+        mProgressBar = view.findViewById(R.id.progress_bar)
     }
 
-    private fun getDataFromServer() {
-//        var doc: Document
-//        var newElement: Elements? = null
-        Thread(Runnable {
-            kotlin.run {
+    private fun requestDataFromRemote(url: String) {
+        mProgressBar.visibility = View.VISIBLE
+        Observable.create<Document>({ emitter ->
+            Thread({
                 try {
-                    getNewestRingtoneFromRemote()
-                            .subscribeOn(Schedulers.newThread())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(object : Observer<Elements> {
-                                override fun onSubscribe(d: Disposable) {
-
-                                }
-
-                                override fun onError(e: Throwable) {
-                                    e.printStackTrace()
-                                }
-
-                                override fun onNext(t: Elements) {
-                                    if (t.size > 0) {
-                                        mDatabase?.deleteAllRecords()
-                                        for (query in t) {
-                                            val ringtoneName = query.select("b[itemprop]").text()
-                                            val ringtoneAuthor = query.select("a[style][title][href]").text()
-                                            val ringtoneLink = query.select("span").attr("data-link")
-                                            mDatabase?.addNewestRingtone(
-                                                    Ringtone(0, ringtoneName,
-                                                            ringtoneAuthor,
-                                                            ringtoneLink)
-                                            )
-                                        }
-                                    }
-                                }
-
-                                override fun onComplete() {
-                                    mDatabase?.getNewestRingtone()?.let {
-                                        mAdapter.setData(it)
-                                    }
-                                    println("Load completes.......")
-                                }
-                            })
-                } catch (e: Exception) {
-                    var newestRingtoneList: MutableList<Ringtone> = mutableListOf()
-                    getNewestRingtoneFromLocal()
-                            .subscribeOn(Schedulers.newThread())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(object :
-                                    Observer<MutableList<Ringtone>> {
-                                override fun onComplete() {
-                                    mAdapter.setData(newestRingtoneList)
-                                }
-
-                                override fun onNext(t: MutableList<Ringtone>) {
-                                    newestRingtoneList = t
-                                }
-
-                                override fun onSubscribe(d: Disposable) {
-                                }
-
-                                override fun onError(e: Throwable) {
-                                    e.printStackTrace()
-                                }
-
-                            })
+                    val doc = Jsoup.connect(url).timeout(10000).get()
+                    emitter.onNext(doc)
+                    emitter.onComplete()
+                } catch (t: Throwable) {
+                    emitter.onError(t)
                 }
-            }
-        }).start()
-    }
+            }).start()
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Observer<Document> {
+                    override fun onSubscribe(d: Disposable) {
 
-    private fun getNewestRingtoneFromLocal(): Observable<MutableList<Ringtone>> {
-        return Observable.just(mDatabase?.getNewestRingtone())
-    }
+                    }
 
-    private fun getNewestRingtoneFromRemote(): Observable<Elements> {
-        val doc = Jsoup.connect("http://tainhacchuong.net").timeout(1000).get()
-        val newElement = doc.select("div.item.trailer")
-        return Observable.just(newElement)
+                    override fun onError(e: Throwable) {
+                        e.printStackTrace()
+                        Toast.makeText(context, "Cache Data Loaded", Toast.LENGTH_LONG).show()
+                        mDatabase?.getNewestRingtone()?.let {
+                            mAdapter.setData(it)
+                        }
+                        mProgressBar.visibility = View.GONE
+                    }
+
+                    override fun onNext(doc: Document) {
+                        val newElement = doc.select(Constants.ELEMENT)
+                        if (newElement.size > 0) {
+                            mDatabase?.deleteAllRecords()
+                            for (query in newElement) {
+                                val ringtoneName = query.select(Constants.KEY_RINGTONE_NAME).text()
+                                val ringtoneAuthor = query.select(Constants.KEY_RINGTONE_AUTHOR).text()
+                                val ringtoneLink = query.select(Constants.KEY_RINGTONE_URL)
+                                        .attr(Constants.ATTRIBUTE_RINGTONE_URL)
+                                mDatabase?.addNewestRingtone(
+                                        Ringtone(0, ringtoneName,
+                                                ringtoneAuthor,
+                                                ringtoneLink)
+                                )
+                            }
+                        }
+                    }
+
+                    override fun onComplete() {
+                        mDatabase?.getNewestRingtone()?.let {
+                            mAdapter.setData(it)
+                        }
+                        mProgressBar.visibility = View.GONE
+                    }
+
+                })
     }
 }
