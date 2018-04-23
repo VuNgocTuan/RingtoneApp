@@ -6,6 +6,8 @@ package ringtone.studio.vuetu.ringtoneapp.utils
 class Constants {
     companion object {
         val MAIN_URL = "http://tainhacchuong.net"
+        val MAIN_URL_HOT_RINGTONE = "http://tainhacchuong.net/nhac-chuong-hot.html"
+        val MAIN_URL_BEST_RINGTONE = "http://tainhacchuong.net/nhac-chuong-hay.html"
         val ELEMENT = "div.item.trailer"
         val KEY_RINGTONE_NAME = "b[itemprop]"
         val KEY_RINGTONE_AUTHOR = "a[style][title][href]"

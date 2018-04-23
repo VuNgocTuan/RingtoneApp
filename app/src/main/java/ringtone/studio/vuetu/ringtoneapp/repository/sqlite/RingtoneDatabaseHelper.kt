@@ -13,16 +13,32 @@ class RingtoneDatabaseHelper(context: Context?) : SQLiteOpenHelper(context, DATA
 
     companion object {
         val DATABASE_NAME = "ringtoneDatabase"
-        val DATABASE_VERSION = 1
+        val DATABASE_VERSION = 2
 
-        private val TABLE_NEWEST_RINGTONE = "tbl_ringtone_new"
+        val TABLE_NEWEST_RINGTONE = "tbl_ringtone_new"
+        val TABLE_HOT_RINGTONE = "tbl_ringtone_hot"
+        val TABLE_BEST_RINGTONE = "tbl_ringtone_best"
 
         private val KEY_RINGTONE_ID = "id"
         val KEY_RINGTONE_NAME = "name"
         val KEY_RINGTONE_AUTHOR = "author"
         val KEY_RINGTONE_URL = "url"
 
-        private val CREATE_RINGTONE_TABLE = "CREATE TABLE $TABLE_NEWEST_RINGTONE ( " +
+        private val CREATE_NEWEST_RINGTONE_TABLE = "CREATE TABLE $TABLE_NEWEST_RINGTONE ( " +
+                KEY_RINGTONE_ID + " INTEGER PRIMARY KEY," +
+                KEY_RINGTONE_NAME + " TEXT," +
+                KEY_RINGTONE_AUTHOR + " TEXT," +
+                KEY_RINGTONE_URL + " TEXT" +
+                ")"
+
+        private val CREATE_HOT_RINGTONE_TABLE = "CREATE TABLE $TABLE_HOT_RINGTONE ( " +
+                KEY_RINGTONE_ID + " INTEGER PRIMARY KEY," +
+                KEY_RINGTONE_NAME + " TEXT," +
+                KEY_RINGTONE_AUTHOR + " TEXT," +
+                KEY_RINGTONE_URL + " TEXT" +
+                ")"
+
+        private val CREATE_BEST_RINGTONE_TABLE = "CREATE TABLE $TABLE_BEST_RINGTONE ( " +
                 KEY_RINGTONE_ID + " INTEGER PRIMARY KEY," +
                 KEY_RINGTONE_NAME + " TEXT," +
                 KEY_RINGTONE_AUTHOR + " TEXT," +
@@ -44,12 +60,17 @@ class RingtoneDatabaseHelper(context: Context?) : SQLiteOpenHelper(context, DATA
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
-        db?.execSQL(CREATE_RINGTONE_TABLE)
+        db?.execSQL(CREATE_NEWEST_RINGTONE_TABLE)
+        db?.execSQL(CREATE_HOT_RINGTONE_TABLE)
+        db?.execSQL(CREATE_BEST_RINGTONE_TABLE)
+        println("ExecSQL==============================")
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
         if (oldVersion != newVersion) {
             db?.execSQL("DROP TABLE IF EXISTS " + TABLE_NEWEST_RINGTONE)
+            db?.execSQL("DROP TABLE IF EXISTS " + TABLE_HOT_RINGTONE)
+            db?.execSQL("DROP TABLE IF EXISTS " + TABLE_BEST_RINGTONE)
             onCreate(db)
         }
     }
@@ -73,11 +94,11 @@ class RingtoneDatabaseHelper(context: Context?) : SQLiteOpenHelper(context, DATA
         }
     }
 
-    fun getNewestRingtone(): MutableList<Ringtone> {
+    fun getRingtoneList(table: String): MutableList<Ringtone> {
         val newestRingtone = mutableListOf<Ringtone>()
         val db = readableDatabase
         val cursor = db.query(
-                RingtoneDatabaseHelper.TABLE_NEWEST_RINGTONE,
+                table,
                 null,
                 null,
                 null,
@@ -107,15 +128,15 @@ class RingtoneDatabaseHelper(context: Context?) : SQLiteOpenHelper(context, DATA
         return newestRingtone
     }
 
-    fun deleteAllRecords() {
+    fun deleteAllRecords(table: String) {
         val db = writableDatabase
         db.beginTransaction()
         try {
-            db.execSQL("delete from $TABLE_NEWEST_RINGTONE")
+            db.execSQL("delete from $table")
             db.setTransactionSuccessful()
         } catch (e: Exception) {
             e.printStackTrace()
-        }finally {
+        } finally {
             db.endTransaction()
             db.close()
         }
