@@ -4,6 +4,8 @@ import android.content.Context
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
+import ringtone.studio.vuetu.ringtoneapp.tablayout.fragment.BestRingtoneFragment
+import ringtone.studio.vuetu.ringtoneapp.tablayout.fragment.HotRingtoneFragment
 import ringtone.studio.vuetu.ringtoneapp.tablayout.fragment.NewRingtoneFragment
 
 /**
@@ -18,22 +20,26 @@ class MainPagerAdapter(fm: FragmentManager, context: Context) : FragmentPagerAda
         return mPageCount
     }
 
-    override fun getItem(position: Int): Fragment {
+    override fun getItem(position: Int): Fragment? {
         when (position) {
             0 -> {
                 return NewRingtoneFragment.newInstance()
             }
             1 -> {
+                return HotRingtoneFragment.newInstance()
             }
             2
             -> {
+                return BestRingtoneFragment.newInstance()
             }
 
         }
-        return NewRingtoneFragment.newInstance()
+        return null
     }
 
     override fun getPageTitle(position: Int): CharSequence? {
         return tabTitles[position]
     }
+
+    
 }

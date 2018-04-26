@@ -16,8 +16,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:src="@drawable/ic_play_white"
         android:background="@color/Transparent"
+        android:src="@drawable/ic_play_white"
         app:layout_constraintBottom_toBottomOf="@id/image_item_background"
         app:layout_constraintHorizontal_bias="0.05"
         app:layout_constraintLeft_toLeftOf="@id/image_item_background"
@@ -29,25 +29,43 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/_dp10"
-        android:src="@drawable/ic_file_download_white_24dp"
         android:background="@color/Transparent"
+        android:src="@drawable/ic_file_download_white_24dp"
         app:layout_constraintBottom_toBottomOf="@id/image_item_background"
         app:layout_constraintRight_toRightOf="@id/image_item_background"
         app:layout_constraintTop_toTopOf="@id/image_item_background"/>
 
-    <TextView
-        android:id="@+id/text_ringtone_name"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_dp10"
-        android:layout_marginTop="@dimen/_dp10"
-        android:text="@string/app_name"
-        android:textColor="@color/White"
-        android:textSize="@dimen/_sp17"
-        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/button_play"
         app:layout_constraintRight_toLeftOf="@id/button_download"
-        app:layout_constraintTop_toTopOf="@id/button_play"/>
+        android:layout_marginStart="@dimen/_dp30">
+
+        <TextView
+            android:id="@+id/text_ringtone_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_dp10"
+            android:layout_marginTop="@dimen/_dp10"
+            android:text="@string/app_name"
+            android:textColor="@color/White"
+            android:textSize="@dimen/_sp17"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/text_ringtone_author"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/splash_text_ringtone"
+            android:textColor="@color/White"
+            android:textSize="@dimen/_sp14"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="@id/text_ringtone_name"
+            app:layout_constraintTop_toBottomOf="@id/text_ringtone_name"/>
+    </android.support.constraint.ConstraintLayout>
 
     <com.github.lzyzsd.circleprogress.DonutProgress
         android:id="@+id/progress_player"
@@ -62,14 +80,4 @@
         app:layout_constraintLeft_toLeftOf="@id/button_play"
         app:layout_constraintRight_toRightOf="@id/button_play"
         app:layout_constraintTop_toTopOf="@id/button_play"/>
-
-    <TextView
-        android:id="@+id/text_ringtone_author"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/splash_text_ringtone"
-        android:textColor="@color/White"
-        android:textSize="@dimen/_sp12"
-        app:layout_constraintLeft_toLeftOf="@id/text_ringtone_name"
-        app:layout_constraintTop_toBottomOf="@id/text_ringtone_name"/>
 </android.support.constraint.ConstraintLayout>

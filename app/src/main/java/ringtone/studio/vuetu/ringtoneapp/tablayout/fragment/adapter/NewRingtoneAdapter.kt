@@ -23,9 +23,18 @@ class NewRingtoneAdapter : RecyclerView.Adapter<NewRingtoneAdapter.ViewHolder>()
     private var currentPlayingIndex = -1
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if (!mRingtoneList[position].isPlaying) {
+        if (!mRingtoneList[position].isPlaying &&
+                mRingtoneList[position].id != MyMediaPlayer.RINGTONE_ID_PLAYING &&
+                mRingtoneList[position].name != MyMediaPlayer.RINGTONE_NAME_PLAYING) {
             holder.resetState()
             holder.changePlayButtonState(false)
+        } else if (mRingtoneList[position].isPlaying &&
+                mRingtoneList[position].id != MyMediaPlayer.RINGTONE_ID_PLAYING &&
+                mRingtoneList[position].name != MyMediaPlayer.RINGTONE_NAME_PLAYING) {
+            mRingtoneList[position].isPlaying = false
+            holder.resetState()
+            holder.changePlayButtonState(false)
+            notifyItemChanged(position)
         } else {
             holder.changePlayButtonState(true)
         }
@@ -44,6 +53,7 @@ class NewRingtoneAdapter : RecyclerView.Adapter<NewRingtoneAdapter.ViewHolder>()
                     notifyItemChanged(currentPlayingIndex)
                 }
                 my.playMusicByUrl(mRingtoneList[position].url,
+                        mRingtoneList[position].id, mRingtoneList[position].name,
                         MediaPlayer.OnCompletionListener {
                             currentPlayingIndex = -1
                             mRingtoneList[position].isPlaying = false
@@ -85,11 +95,13 @@ class NewRingtoneAdapter : RecyclerView.Adapter<NewRingtoneAdapter.ViewHolder>()
 
         init {
             myRun = Runnable {
-                if (mRingtone.isPlaying) {
+                if (mRingtone.isPlaying && mRingtone.id == MyMediaPlayer.RINGTONE_ID_PLAYING
+                        && mRingtone.name == MyMediaPlayer.RINGTONE_NAME_PLAYING) {
                     mProgressPlayer.progress = MyMediaPlayer.getInstance().getCurrentPosition()
                     mHandler.postDelayed(myRun, 200)
                 } else {
                     resetState()
+                    changePlayButtonState(false)
                 }
             }
         }
